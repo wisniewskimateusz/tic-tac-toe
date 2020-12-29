@@ -15,6 +15,8 @@
 
 <?import tictactoe.GameButton?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tictactoe.TicTacToeController">
     <children>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
@@ -43,8 +45,11 @@
                         <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Button>
-                  <ToggleButton fx:id="levelOneButton" mnemonicParsing="false" onAction="#levelOneButtonOnAction" prefHeight="62.0" prefWidth="110.0" text="Poziom 1" textAlignment="CENTER">
-                     <cursor>
+                  <RadioButton fx:id="levelOneButton" mnemonicParsing="false" onAction="#setLevel" toggleGroup="$radioGroup" prefHeight="62.0" prefWidth="110.0" text="Poziom 1" textAlignment="CENTER">
+                      <toggleGroup>
+                          <ToggleGroup fx:id="setLevel" />
+                      </toggleGroup>
+                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <HBox.margin>
@@ -53,9 +58,9 @@
                      <font>
                         <Font name="System Bold Italic" size="13.0" />
                      </font>
-                  </ToggleButton>
-                  <ToggleButton fx:id="levelTwoButton" mnemonicParsing="false" onAction="#levelTwoButtonOnAction" prefHeight="62.0" prefWidth="110.0" text="Poziom 2" textAlignment="CENTER">
-                     <cursor>
+                  </RadioButton>
+                  <RadioButton fx:id="levelTwoButton" mnemonicParsing="false" onAction="#setLevel" toggleGroup="$levelGroup" prefHeight="62.0" prefWidth="110.0" text="Poziom 2" textAlignment="CENTER">
+                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <HBox.margin>
@@ -64,7 +69,7 @@
                      <font>
                         <Font name="System Bold Italic" size="13.0" />
                      </font>
-                  </ToggleButton>
+                  </RadioButton>
                   <Button fx:id="showRankingButton" mnemonicParsing="false" onAction="#showRankingButtonOnAction" prefHeight="62.0" prefWidth="110.0" text="Pokaż Ranking" textAlignment="CENTER">
                      <cursor>
                         <Cursor fx:constant="HAND" />

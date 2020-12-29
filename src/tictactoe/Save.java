@@ -1,14 +1,14 @@
 package tictactoe;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,10 +16,38 @@ public class Save implements Serializable {
 
     private final String scoreFileName = "score.txt";
     private final String currentScoreFileName = "currentScore.txt";
-    String rankingFileName = "ranking.txt";
     List<Score> history = new ArrayList<>();
     List<String> result = new ArrayList<>();
     List<String> score = new ArrayList<>();
+
+    private final String boardMapFileName = "boardMap.txt";
+    Map<Integer, Integer> boardMap = new HashMap<>();
+
+    public void saveBoardMap(Map<Integer, Integer> boardMap) {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(boardMapFileName));
+            oos.writeObject(boardMap);
+            oos.close();
+            System.out.println("Zapisano mapę.");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public Map<Integer, Integer> loadBoardMap() {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(boardMapFileName));
+            Object readMap = ois.readObject();
+            if(readMap instanceof HashMap) {
+                boardMap.putAll((HashMap) readMap);
+                System.out.println("Wczytano mapę.");
+            }
+            ois.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return boardMap;
+    }
 
     public void saveScoreToFile(String scoreBuild) {
         Path path = Paths.get(scoreFileName);

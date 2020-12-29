@@ -2,7 +2,9 @@ package tictactoe;
 
 import javafx.scene.control.Button;
 
-public class GameButton extends Button {
+import java.io.Serializable;
+
+public class GameButton extends Button implements Serializable {
 
     public GameButton() {
         super();
@@ -29,12 +31,8 @@ public class GameButton extends Button {
         return state;
     }
 
-    /*for(int x = 0; x < 200; x++) {
-        int random = generator.nextInt(9);
-        if(buttons[random].getState() == 0) {
-            buttons[random].setState(-1);
-            checkScore();
-            break;
-        }
-    }*/
+    @Override
+    public String toString() {
+        return "Status: " + state;
+    }
 }
