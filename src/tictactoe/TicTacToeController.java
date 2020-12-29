@@ -8,53 +8,30 @@ import java.io.IOException;
 import java.util.*;
 
 public class TicTacToeController {
-    @FXML
-    private Button newGameButton;
-    @FXML
-    private Button resetButton;
-    @FXML
-    private RadioButton levelOneButton;
-    @FXML
-    private RadioButton levelTwoButton;
+    @FXML private Button newGameButton;
+    @FXML private Button resetButton;
+    @FXML private RadioButton levelOneButton;
+    @FXML private RadioButton levelTwoButton;
 
-    @FXML
-    private ToggleGroup levelGroup;
+    @FXML private ToggleGroup levelGroup;
+    @FXML private Button showRankingButton;
+    @FXML private Label resultLabel;
+    @FXML private Label scoreLabel;
 
-    @FXML
-    private Button showRankingButton;
+    @FXML private GameButton button1;
+    @FXML private GameButton button2;
+    @FXML private GameButton button3;
+    @FXML private GameButton button4;
+    @FXML private GameButton button5;
+    @FXML private GameButton button6;
+    @FXML private GameButton button7;
+    @FXML private GameButton button8;
+    @FXML private GameButton button9;
 
-    @FXML
-    private Label resultLabel;
-    @FXML
-    private Label scoreLabel;
-
-    @FXML
-    private GameButton button1;
-    @FXML
-    private GameButton button2;
-    @FXML
-    private GameButton button3;
-    @FXML
-    private GameButton button4;
-    @FXML
-    private GameButton button5;
-    @FXML
-    private GameButton button6;
-    @FXML
-    private GameButton button7;
-    @FXML
-    private GameButton button8;
-    @FXML
-    private GameButton button9;
-
-    @FXML
-    private Button saveScoreButton;
-    @FXML
-    private Button loadScoreButton;
-    @FXML
-    private Button saveProgressButton;
-    @FXML
-    private Button loadProgressButton;
+    @FXML private Button saveScoreButton;
+    @FXML private Button loadScoreButton;
+    @FXML private Button saveProgressButton;
+    @FXML private Button loadProgressButton;
 
     private GameButton[] buttons = new GameButton[9];
     private Random generator = new Random();
@@ -98,29 +75,27 @@ public class TicTacToeController {
 
     @FXML
     void newGameButtonOnAction() {
-        newGameButton.setOnAction(event -> {
-            playedGames += 1;
-            for (int i = 0; i < 9; i++) {
-                buttons[i].setState(0);
-                buttons[i].setDisable(false);
-            }
-            tie = 0;
-        });
+        playedGames += 1;
+        for (int i = 0; i < 9; i++) {
+            buttons[i].setState(0);
+            buttons[i].setDisable(false);
+        }
+        tie = 0;
     }
 
     @FXML
     void resetButtonOnAction() {
-        resetButton.setOnAction(event -> {
-            scoreLabel.setText("");
-            for (int i = 0; i < 9; i++) {
-                buttons[i].setState(0);
-                buttons[i].setDisable(false);
-            }
-            score1 = 0;
-            score2 = 0;
-            tie = 0;
-            scoreLabel.setText(score1 + " - " + score2);
-        });
+        scoreLabel.setText("");
+        for (int i = 0; i < 9; i++) {
+            buttons[i].setState(0);
+            buttons[i].setDisable(false);
+        }
+        score1 = 0;
+        score2 = 0;
+        wonGames = 0;
+        playedGames = 0;
+        tie = 0;
+        scoreLabel.setText(score1 + " - " + score2);
     }
 
     @FXML
@@ -130,9 +105,9 @@ public class TicTacToeController {
             if (buttons[i] == event.getSource()) {
                 buttons[i].setState(1);
                 tie++;
-                setLevel();
-                //levelOneButtonOnAction();
-                //levelTwo();
+                if (!checkScore()) {
+                    setLevel();
+                }
             }
             score = new Score(wonGames, loosesGames);
         }
@@ -140,7 +115,7 @@ public class TicTacToeController {
 
     @FXML
     void saveScoreButtonOnAction() {
-        saveScoreButton.setOnAction(event -> saveScore());
+        saveScore();
     }
 
     private void saveScore() {
@@ -150,22 +125,20 @@ public class TicTacToeController {
         scoreBuild.append(loosesGames);
         scoreBuild.toString();
         save.saveScoreToFile(scoreBuild.toString());
+
+        resetButtonOnAction();
     }
 
     @FXML
     void loadScoreButtonOnAction() {
-        loadScoreButton.setOnAction(event -> {
-            rankingHistory = save.loadScoreFromFile();
-            System.out.println(rankingHistory.size());
-        });
+        rankingHistory = save.loadScoreFromFile();
+        System.out.println(rankingHistory.size());
     }
 
     @FXML
     void saveProgressButtonOnAction() {
-        saveProgressButton.setOnAction(event -> {
-            saveCurrentProgress();
-            saveMap();
-        });
+        saveCurrentProgress();
+        saveMap();
     }
 
     private void saveCurrentProgress() {
@@ -183,10 +156,8 @@ public class TicTacToeController {
 
     @FXML
     void loadProgressButtonOnAction() {
-        loadProgressButton.setOnAction(event -> {
-            loadCurrentProgress();
-            loadMap();
-        });
+        loadCurrentProgress();
+        loadMap();
     }
 
     private void loadCurrentProgress() {
@@ -255,7 +226,6 @@ public class TicTacToeController {
         }
     }
 
-    @FXML
     void levelOneButtonOnAction() {
         System.out.println("Level 1");
         for (int x = 0; x < 100; x++) {
@@ -268,7 +238,6 @@ public class TicTacToeController {
         }
     }
 
-    @FXML
     void levelTwoButtonOnAction() {
         System.out.println("Level 2");
         //row 1
@@ -335,7 +304,12 @@ public class TicTacToeController {
         scoreLabel.setText(score1 + " - " + score2);
     }
 
-    private void checkScore() {
+    //Zwraca true jesli gra sie skonczyla
+    private boolean checkScore() {
+        if (tie == 9) {
+            resultLabel.setText("Remis!");
+            return true;
+        }
         //Row 1
         if (buttons[0].getState() + buttons[1].getState() + buttons[2].getState() == 3) {
             resultLabel.setText(p1 + " wygrał!");
@@ -346,6 +320,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[0].getState() + buttons[1].getState() + buttons[2].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -356,6 +331,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Row 2
         if (buttons[3].getState() + buttons[4].getState() + buttons[5].getState() == 3) {
@@ -367,6 +343,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[3].getState() + buttons[4].getState() + buttons[5].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -377,6 +354,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Row 3
         if (buttons[6].getState() + buttons[7].getState() + buttons[8].getState() == 3) {
@@ -388,6 +366,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[6].getState() + buttons[7].getState() + buttons[8].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -398,6 +377,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Column 1
         if (buttons[0].getState() + buttons[3].getState() + buttons[6].getState() == 3) {
@@ -409,6 +389,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[0].getState() + buttons[3].getState() + buttons[6].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -419,6 +400,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Column 2
         if (buttons[1].getState() + buttons[4].getState() + buttons[7].getState() == 3) {
@@ -430,6 +412,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[1].getState() + buttons[4].getState() + buttons[7].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -440,6 +423,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Column 3
         if (buttons[2].getState() + buttons[5].getState() + buttons[8].getState() == 3) {
@@ -451,6 +435,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[2].getState() + buttons[5].getState() + buttons[8].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -461,6 +446,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Diagonal 1:
         if (buttons[0].getState() + buttons[4].getState() + buttons[8].getState() == 3) {
@@ -472,6 +458,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[0].getState() + buttons[4].getState() + buttons[8].getState() == -3) {
             resultLabel.setText(p2 + " wygrał!");
@@ -482,6 +469,7 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
         //Diagonal 2:
         if (buttons[2].getState() + buttons[4].getState() + buttons[6].getState() == 3) {
@@ -493,6 +481,7 @@ public class TicTacToeController {
             playedGames++;
             wonGames++;
             scoreLabel();
+            return true;
         }
         if (buttons[2].getState() + buttons[4].getState() + buttons[6].getState() == -3) {
             resultLabel.setText(p2 + " wygrał");
@@ -503,10 +492,8 @@ public class TicTacToeController {
             playedGames++;
             loosesGames++;
             scoreLabel();
+            return true;
         }
-        //Tie:
-        if (tie == 9) {
-            resultLabel.setText("Remis!");
-        }
+        return false;
     }
 }

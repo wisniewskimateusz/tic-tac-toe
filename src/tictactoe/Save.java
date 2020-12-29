@@ -16,11 +16,10 @@ public class Save implements Serializable {
 
     private final String scoreFileName = "score.txt";
     private final String currentScoreFileName = "currentScore.txt";
-    List<Score> history = new ArrayList<>();
+    private final String boardMapFileName = "boardMap.txt";
+
     List<String> result = new ArrayList<>();
     List<String> score = new ArrayList<>();
-
-    private final String boardMapFileName = "boardMap.txt";
     Map<Integer, Integer> boardMap = new HashMap<>();
 
     public void saveBoardMap(Map<Integer, Integer> boardMap) {
@@ -64,7 +63,6 @@ public class Save implements Serializable {
         Path file = Paths.get(scoreFileName);
         try (Stream<String> stream = Files.lines(file)) {
             result = stream
-                    //.flatMap(string -> Stream.of(string.split("-")))
                     .collect(Collectors.toList());
             result.forEach(System.out::println);
             System.out.println("Wczytano.");
